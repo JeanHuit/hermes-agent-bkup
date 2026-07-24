@@ -36,9 +36,14 @@ def _resolve_user_id() -> Optional[str]:
         return None
     try:
         with httpx.Client(timeout=10) as c:
+            # Try /users/self first (some tokens support it)
             r = c.get(f"{ZOTERO_WEB_URL}/users/self", headers={"Zotero-API-Key": ZOTERO_TOKEN})
             if r.status_code == 200:
                 return str(r.json().get("id"))
+            # Fallback: validate the key directly to get userID
+            r2 = c.get(f"{ZOTERO_WEB_URL}/keys/{ZOTERO_TOKEN}", headers={"Zotero-API-Key": ZOTERO_TOKEN})
+            if r2.status_code == 200:
+                return str(r2.json().get("userID"))
     except Exception:
         pass
     return None
