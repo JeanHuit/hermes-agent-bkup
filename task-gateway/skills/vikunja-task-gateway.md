@@ -29,11 +29,16 @@ All agents are equally skilled. Capabilities field is optional/empty.
 
 ## Get Work (Auto-Route)
 
+Two ways tasks get auto-routed:
+
+**Polling (automatic):** Gateway checks every 15s for unclaimed tasks and routes them to the least-loaded agent. No action needed.
+
+**Manual:**
 ```bash
 # Create a task
 curl -X POST http://127.0.0.1:8420/vikunja/tasks \
   -H "Content-Type: application/json" \
-  -d '{"title":"Fix the thing","project_id":8}'
+  -d '{"title":"Fix the thing","project_id":26}'
 
 # Auto-route to least-loaded agent
 curl -X POST "http://127.0.0.1:8420/tasks/auto-route?task_id=<id>"
